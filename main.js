@@ -58,7 +58,7 @@ export async function tambahBarangKeKeranjang(
   try {
     // Menyimpan data ke collection transaksi 
     const refDokumen = await addDoc(collection(basisdata, "transaksi"), {
-      idbarang: idbarang,
+      id: id,
       nama: nama,
       harga: harga,
       jumlah: jumlah,
