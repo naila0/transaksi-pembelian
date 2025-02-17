@@ -10,7 +10,8 @@ import {
   deleteDoc,
   updateDoc,
   query,
-  orderBy
+  orderBy,
+  where
 } from 'https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js';
 
 const firebaseConfig = {
@@ -56,17 +57,40 @@ export async function tambahBarangKeKeranjang(
   namapelanggan
 ) {
   try {
-    // Menyimpan data ke collection transaksi 
-    const refDokumen = await addDoc(collection(basisdata, "transaksi"), {
-      idbarang: idbarang,
-      nama: nama,
-      harga: harga,
-      jumlah: jumlah,
-      idpelanggan: idpelanggan,
-      namapelanggan: namapelanggan
+    // periksa apakah idbarang sudah ad di collection transaksi?
+    //mengambil data di seluruh collection transaksi 
+    let refDokumen = collection(basisdata, "transaksi")
+
+    //membuat query untuk mencari data berdasarkan idbarang
+    let queryBarang = query(refDokumen, where("idbarang", "==", idbarang))
+
+    let snapshotBarang = await getDocs(queryBarang)
+    let jumlahRecord = 0
+    let idtransaksi = ''
+    let jumlahSebelumnya = 0
+
+    snapshotBarang.forEach((dokumen) => {
+      jumlahRecord++
+      idtransaksi = dokumen.id
+      jumlahSebelumnya = dokumen.data().jumlah
+    })
+
+    if (jumlahRecord == 0) {
+      //kalau belum ada, tambahkan langsung ke collectio
+      const refDokumen = await addDoc(collection(basisdata, "transaksi"), {
+        idbarang: idbarang,
+        nama: nama,
+        harga: harga,
+        jumlah: jumlah,
+        idpelanggan: idpelanggan,
+        namapelanggan: namapelanggan
       })
-   
-  
+    } else if (jumlahRecord == 1) {
+      //kalau sudah ada, tambahkan jumlahnya saja
+      jumlahSebelumnya++
+      await updateDoc(doc(basisdata, "transaksi", idtransaksi), { jumlah: jumlahSebelumnya })
+    }
+
     // Menampilkan pesan berhasil
     console.log("Berhasil menyimpan keranjang")
   } catch (error) {
@@ -80,7 +104,7 @@ export async function ambilDaftarBarangDiKeranjang() {
   const refDokumen = collection(basisdata, "transaksi");
   const kueri = query(refDokumen, orderBy("nama"));
   const cuplikanKueri = await getDocs(kueri);
-  
+
   let hasilKueri = [];
   cuplikanKueri.forEach((dokumen) => {
     hasilKueri.push({
@@ -88,8 +112,8 @@ export async function ambilDaftarBarangDiKeranjang() {
       nama: dokumen.data().nama,
       jumlah: dokumen.data().jumlah,
       harga: dokumen.data().harga
-     
-      
+
+
     })
   })
   return hasilKueri;
