@@ -46,35 +46,35 @@
   </table>
 
   <script type="module">
-    import { ambilDaftarBarang, tambahBarangKeKeranjang ,ambilDaftarBarangDiKeranjang} from './main.js';
+    import { ambilDaftarBarang, tambahBarangKeKeranjang, ambilDaftarBarangDiKeranjang, hapusBarangDariKeranjang } from './main.js';
 
-//menampilkan daftar barang
+    //menampilkan daftar barang
     $(document).ready(async function() {
       async function tampilBarangDiKeranjang() {
-              //menampilkan  barang yang ada di keranjang 
-      let elemenDaftarBarangDiKeranjang = $("#daftar-keranjang > tbody")
-      let daftarBarangDiKeranjang = await ambilDaftarBarangDiKeranjang()
-     let nomorKeranjang = 1
-     let totalKeranjang = 0
-    
-     //mengosongkan daftar barang sebelumnya 
-    elemenDaftarBarangDiKeranjang.empty()
-    
-    daftarBarangDiKeranjang.forEach((data) => {
-      elemenDaftarBarangDiKeranjang.append(
-        "<tr>" +
-        "<td>" + nomorKeranjang + "</td>" +
-        "<td>" + data.nama + "</td>" +
-        "<td>" + data.harga + "</td>" +
-        "<td>" + data.jumlah + "</td>" +
-        "<td>" + "<i class='bi bi-trash'></i>" + "</td>" +
-        "</tr>"
-        )
-        nomorKeranjang++
-    })
-      // selesai menampilkan barang di keranjang 
+        //menampilkan  barang yang ada di keranjang 
+        let elemenDaftarBarangDiKeranjang = $("#daftar-keranjang > tbody")
+        let daftarBarangDiKeranjang = await ambilDaftarBarangDiKeranjang()
+        let nomorKeranjang = 1
+        let totalKeranjang = 0
+
+        //mengosongkan daftar barang sebelumnya 
+        elemenDaftarBarangDiKeranjang.empty()
+
+        daftarBarangDiKeranjang.forEach((data) => {
+          elemenDaftarBarangDiKeranjang.append(
+            "<tr>" +
+            "<td>" + nomorKeranjang + "</td>" +
+            "<td>" + data.nama + "</td>" +
+            "<td>" + data.harga + "</td>" +
+            "<td>" + data.jumlah + "</td>" +
+            "<td>" + "<a href='#' class='link-hapus' data='" + data.id + "'><i class='bi bi-trash'></i></a>" + "</td>" +
+            "</tr>"
+          )
+          nomorKeranjang++
+        })
+        // selesai menampilkan barang di keranjang 
       }
-      
+
       // menampilkan daftar barang di inventory 
       let elemenDaftarBarang = $("#daftar-barang > tbody");
       let daftarBarang = await ambilDaftarBarang();
@@ -96,7 +96,7 @@
       })
       // selesai menampilkan barang di inventory 
 
-    await tampilBarangDiKeranjang()
+      await tampilBarangDiKeranjang()
 
       $(".link-keranjang").click(async function() {
         let idbarang = $(this).attr('data')
@@ -109,9 +109,16 @@
         await tambahBarangKeKeranjang(idbarang, nama, harga, jumlah, idpelanggan, namapelanggan)
 
         console.log('menambah barang ke Keranjang')
-      
-    await tampilBarangDiKeranjang()
-        
+
+        await tampilBarangDiKeranjang()
+      })
+
+      //menghapus item dari keranjang 
+      $("#daftar-keranjang > tbody").on('clik', '.link-hapus', async function() {
+        await hapusBarangDariKeranjang($(this).attr('data'))
+
+        //refresh halaman 
+        location.reload()
       })
     })
   </script>
