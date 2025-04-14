@@ -21,14 +21,14 @@
 // impor fungsi yang diperlukan 
 import { ambilPelanggan } from './main.js'
 
-$(document). ready (async function() {
+$(document).ready (async function() {
   const queryString = window.location.search
   const parameterURL =new URLSearchParams(queryString)
   const id = parameterURL.get('id')
   
 // tampilkan nama pelanggan 
-const pelanggan = await ambilPelanggan()
-  $("#namapelanggan").html(pelanggan.html)
+const pelanggan = await ambilPelanggan(id)
+  $("#namapelanggan").html(pelanggan.nama)
   
   })
 </script>

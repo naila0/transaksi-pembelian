@@ -168,7 +168,7 @@ export async function ubahBarangProsesDikeranjang(id, idpelanggan, namapelanggan
    await updateDoc(doc(basisdata, "transaksi", id), { idpelanggan: idpelanggan, namapelanggan: namapelanggan } 
   
   
-}
+)}
 
 export async function ambilPelanggan(id) {
   const refDokumen = await doc(basisdata, "pelanggan", id)
