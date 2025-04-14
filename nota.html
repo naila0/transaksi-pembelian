@@ -15,7 +15,7 @@
 <body class="m-3">
   <h1 class="text-center">Toko Incer</h1>
 
-<h3>Nota Pembelian</h3>
+<h3>Nota Pembelian atas nama <span id = "namapelanggan"></span></h3>
 
 <script type="module">
 // impor fungsi yang diperlukan 
@@ -28,8 +28,9 @@ $(document). ready (async function() {
   
 // tampilkan nama pelanggan 
 const pelanggan = await ambilPelanggan()
+  $("#namapelanggan").html(pelanggan.html)
   
-})
+  })
 </script>
 </body>
 
